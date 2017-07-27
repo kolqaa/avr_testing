@@ -1,0 +1,121 @@
+#include "main.h"
+#include <stdio.h>
+
+buffer_t buffer;
+volatile uint8_t start_on_read = 0;
+volatile uint16_t lux = 0;
+
+
+static int uart_putchar(char c, FILE *stream);
+static FILE mystdout = FDEV_SETUP_STREAM(uart_putchar, NULL, _FDEV_SETUP_WRITE);
+
+static int uart_putchar(char c, FILE *stream)
+{
+  if (c == '\n')
+    uart_putchar('\r', stream);
+  loop_until_bit_is_set(UCSR0A, UDRE0);
+  UDR0 = c;
+  return 0;
+}
+
+ISR(USART0_UDRE_vect) {
+  if (!bufferIsEmpty(&buffer))
+    UDR0 = popFromBuff(&buffer);
+  else
+    UCSR0B &= ~_BV(UDRIE0);
+}
+
+ISR(TWI_vect) {
+  printf("--->start  ");
+  printf("%#x\n", TWSR);
+  uint8_t state = TWSR & TWSR_MASK;
+  printf("begin: %#x\n", TWSR);
+  printf("state: %#x\n", state);
+
+  switch (state) {
+  case TWI_START:
+  case TWI_REP_START: {
+    printf("start\n");
+    printf("%#x\n", TWSR);
+    (!start_on_read) ? TWI_send_SLA(WRITE) : TWI_send_SLA(READ);
+    printf("after send slave_write/read\n");
+    printf("%#x\n", TWSR);
+  }
+  case TWI_SLA_W_ACK:{
+    printf("slave_write_ack\n");
+    printf("%#x\n", TWSR);
+    TWI_sendData(0b00010000);
+    printf("data send\n");
+    printf("%#x\n", TWSR);
+  }
+  case TWI_DATA_W_ACK: {
+    printf("data_write_ack\n");
+    printf("%#x\n", TWSR);
+    TWI_stop();
+    printf("%#x\n", TWSR);
+    break ;
+  }
+  case TWI_SLA_R_ACK: {
+    printf("%#x\n", TWSR);
+    printf("sla_r_ack\n");
+    printf("%#x\n", TWSR);
+    lux = TWI_readByte_ACK();
+    lux <<= 8;
+    printf("Read H byte\n");
+    printf("%#x\n", TWSR);
+  }
+  case TWI_DATA_R_ACK: {
+    printf("data_r_ack\n");
+    printf("%#x\n", TWSR);
+    lux |= TWI_readByte_NACK();
+    lux = lux/1.2;
+    printf("read scnd byte\n");
+    printf("%#x\n", TWSR);
+    TWI_stop();
+    printf("after stop\n");
+    printf("%#x\n", TWSR);
+    break;
+  }
+  }
+
+  TWCR |= (_BV(TWINT));
+  printf("end\n");
+  printf("end2\n");
+}
+
+void init_port(void) {
+  DDRB |= _BV(PB7);
+  DDRD &= ~(_BV(PD1));
+  DDRD &=  ~(_BV(PD0));
+
+  PORTD |= (_BV(PD1));
+  PORTD |= (_BV(PD0));
+  PORTB &= ~(_BV(PB7));
+}
+
+int	main(void) {  
+  cli();
+  
+  init_port();
+  init_buffer(&buffer, BUFF_SIZE);
+  init_uart();
+  TWI_init();
+  sei();
+  stdout = &mystdout;
+  TWI_start();
+  //init_bh1750_lightSensor();
+  while (1) {
+    //    uint16_t lux = getlux_from_bh1750_lightSensor();
+    //if (start_on_read == 0)
+    printf("in while\n");
+    TWI_start();
+    start_on_read = 1;
+    u_printnumbers(lux);
+    u_print("[lx]\n");
+    
+    if (!bufferIsEmpty(&buffer))
+      UCSR0B |= _BV(UDRIE0);
+    _delay_ms(200);
+  }  
+  return (0);
+}

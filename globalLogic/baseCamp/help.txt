@@ -1,0 +1,28 @@
+#git stash // add file to time buffer // 
+#git stash show -p // show diff file
+#git stash pop // take file from timer buffer
+#git --amend // work with last patch in commit
+#git rebase (interactive mode) -i  <hash code of commit !if you want take 3 need to write 2> // to change patch in choosen commit
+
+
+
+#ssh-keygen ~/.ssh/id_rsa(owner) id_rsa(public) passphrase :enter
+#cat ~/.ssh/id_rsa.pub (it we sholud add to github.com)
+#ssh git@github.com  to connect the github
+#ssh - protocol security to connect to server key - .pub share .private - dont share
+
+#pushd -- like "cd" remeber your history catalog/directory
+#popd -- back your to previous directory/catalog
+#git remote update /update all remote // or git "remote name" update
+#git log --online --decorate
+
+#cherry_pick - get update
+#git remote update - update all remote repo in derictory
+#git show -p (show current commit in patch view)
+#git diff HEAD^ (diff between patch previous and current)
+#git remote prune "name of remote" to kill remote absolutle
+#git remote remove "name of rem" to delete remote (clear only lable)
+#git log "our master".."friend origin/master" show what you didnt have in you repo diff with patch
+#git show HEAD~"num of patch":"file to show" - show what been in file in specific commit
+#git cherry-pick "our master".."firend origin/master" to take all patchez
+#git branch -d (delete branch)

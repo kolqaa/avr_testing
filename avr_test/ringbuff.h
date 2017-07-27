@@ -1,0 +1,21 @@
+#ifndef RINGBUFF_H
+# define RINGBUFF_H
+
+#define BUFF_SIZE 256
+#define BUFF_MASK (BUFF_SIZE - 1)
+
+typedef struct buffer {
+  char *array;
+  int	size;
+  int	read;
+  int	write;
+}	       buffer_t;
+
+int	init_buffer(buffer_t *buffer, int size);
+int	full(buffer_t *buffer);
+int	empty(buffer_t *buffer);
+void	pushInBuff(buffer_t *buffer, char data);
+char	popFromBuff(buffer_t *buffer);
+
+
+#endif

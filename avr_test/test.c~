@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+void write_in_array(char *str)
+{
+  char let = 'a';
+  int i = 0;
+
+  while (i < 5) {
+    *str = let;
+    (*str)++;
+    let++;
+    i++;
+  }
+  *str = '\0';
+  printf("%s\n", str);
+}
+
+int main(void)
+{
+  char *str;
+
+  if ((str = (char *)malloc(sizeof(char) * (6 + 1))) == NULL)
+    return (0);
+
+  write_in_array(*(str[0]));
+  
+  printf("%s\n", str);
+  return (0);
+}

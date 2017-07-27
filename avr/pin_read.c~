@@ -1,0 +1,32 @@
+#include <avr/io.h>
+#include <util/delay.h>
+#include <stdio.h>
+#include <avr/interrupt.h>
+
+#define LED_PIN PB7
+#define BUTTON_PIN PB6
+
+
+int main(void) {
+
+  DDRB |= _BV(LED_PIN);
+  DDRB &= ~_BV(BUTTON_PIN);
+
+  PORTB |= _BV(BUTON_PIN);
+  PORTB &= ~_BV(LED_PIN); 
+  
+  while (1) {
+
+    if (!(PINB & (1<<BUTTON_PIN)))
+      PORTB |= LED_PIN;
+    else
+      PORTB &= ~(LED_PIN);
+    /*    PORTB |= 1 << 7;
+    _delay_ms(1000);
+    PORTB &= ~(1 << 7);
+    _delay_ms(1000);*/
+
+  }
+
+  return (0);
+}

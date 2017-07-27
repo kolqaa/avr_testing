@@ -1,0 +1,29 @@
+Fill Blanks
+A) main
+B) curly brackets
+C) semicolon
+D) stdio.h
+E) Decision (if, else if, esle, ?) 
+F) loops (for, while)
+
+State whether each of the following is true or false. If false, explain why.
+b) false, because. A comment is a sequence of characters that begins with a slash and an asterisk (/ *) 
+and is treated by the compiler as a single whitespace character, and otherwise ignored 
+d) TRUE
+e) TRUE
+f) FLASE, because C is case sensitivity language.
+g) TRUE
+
+Identify and correct the errors in each of the following statements. (Note: There may be more than one error per statement.)
+a) right answer is scanf("%d", &value); 
+b) right answer is  printf("The product of %d and %d is %d\n", x, y, z );
+c) right answer is sumOfNumbers = firstNumber + secondNumber;
+d) true
+e) right answer is /*Program to determine the largest of three integers */
+f) right answer is scanf("%d", &aninteger);
+
+Write a single C statement to accomplish each of the following:
+1) scanf("%d", &a);
+2) printf("The Product is %d\n", a);
+3) if (a != 7)
+   printf("The variable number is not equal to 7\n");
